@@ -17,8 +17,8 @@ import android.widget.ListView;
 public class SwitchAnimationUtil {
 	private int mOrderIndex = 0;
 	private int mDelay = 100;
-	private int mDuration = 300;
-
+	private int mDuration = 1000;
+	private int mDepth=0;
 	public SwitchAnimationUtil() {
 
 	}
@@ -28,9 +28,19 @@ public class SwitchAnimationUtil {
 		ViewUtils.init(root.getContext());
 		bindAnimation(root, 0, type);
 	}
+	
 
+	public void startAnimation(View root,int depth, AnimationType type) {
+		mDepth=depth;
+		ViewUtils.init(root.getContext());
+		bindAnimation(root, 0, type);
+	}
+	
 	private void bindAnimation(View view, int depth, AnimationType type) {
-
+		if (depth==mDepth) {
+			runAnimation(view, mDelay * mOrderIndex, type);
+			return;
+		}
 		if (view instanceof ViewGroup) {
 			ViewGroup group = (ViewGroup) view;
 			if (type == AnimationType.HORIZON_CROSS) {
@@ -68,6 +78,9 @@ public class SwitchAnimationUtil {
 		case HORIZION_RIGHT:
 			runHorizonRightAnimation(view, delay);
 			break;
+		case VERTICAL_BOTTOM:
+			runVerticalBottomAnimation(view,delay);
+			break;
 		case HORIZON_CROSS:
 			// NOT SUPPORT NOW
 			// May be something for List
@@ -93,8 +106,11 @@ public class SwitchAnimationUtil {
 		objectAnimator.setInterpolator(new LinearInterpolator());
 		ObjectAnimator objectAnimatorAlpha = ObjectAnimator.ofFloat(view,
 				"alpha", 0f, 1f);
+
+		objectAnimatorAlpha.setDuration(mDuration);
+		objectAnimator.setDuration(mDuration);
+		
 		AnimatorSet set = new AnimatorSet();
-		set.setDuration(mDuration);
 		set.setStartDelay(delay);
 		set.playTogether(objectAnimator, objectAnimatorAlpha);
 		set.start();
@@ -107,9 +123,29 @@ public class SwitchAnimationUtil {
 		objectAnimator.setInterpolator(new LinearInterpolator());
 		ObjectAnimator objectAnimatorAlpha = ObjectAnimator.ofFloat(view,
 				"alpha", 0f, 1f);
+		
+		objectAnimatorAlpha.setDuration(mDuration);
+		objectAnimator.setDuration(mDuration);
+		
 		AnimatorSet set = new AnimatorSet();
 		set.setStartDelay(delay);
-		set.setDuration(mDuration);
+		set.playTogether(objectAnimator, objectAnimatorAlpha);
+		set.start();
+	}
+	
+	private void runVerticalBottomAnimation(View view, long delay) {
+		view.setAlpha(0);
+		ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view,
+				"translationY", ViewUtils.getScreenHeight(), 0);
+		objectAnimator.setInterpolator(new LinearInterpolator());
+		ObjectAnimator objectAnimatorAlpha = ObjectAnimator.ofFloat(view,
+				"alpha", 0, 1f);
+		
+		objectAnimatorAlpha.setDuration(mDuration);
+		objectAnimator.setDuration(mDuration);
+		
+		AnimatorSet set = new AnimatorSet();
+		set.setStartDelay(delay);
 		set.playTogether(objectAnimator, objectAnimatorAlpha);
 		set.start();
 	}
@@ -135,11 +171,14 @@ public class SwitchAnimationUtil {
 				0f, 1f);
 		ObjectAnimator objectAnimator4 = ObjectAnimator.ofFloat(view, "alpha",
 				0f, 1f);
-
+		objectAnimator.setDuration(mDuration);
+		objectAnimator2.setDuration(mDuration);
+		objectAnimator3.setDuration(mDuration);
+		objectAnimator4.setDuration(mDuration);
+		
 		objectAnimator2.setInterpolator(new AccelerateInterpolator(1.0f));
 		objectAnimator3.setInterpolator(new AccelerateInterpolator(1.0f));
 
-		set.setDuration(mDuration);
 		set.playTogether(objectAnimator, objectAnimator2, objectAnimator3,
 				objectAnimator4);
 		set.setStartDelay(delay);
@@ -156,7 +195,11 @@ public class SwitchAnimationUtil {
 				0f, 1f);
 		ObjectAnimator objectAnimator4 = ObjectAnimator.ofFloat(view, "alpha",
 				0f, 1f);
-		set.setDuration(mDuration);
+		
+		objectAnimator2.setDuration(mDuration);
+		objectAnimator3.setDuration(mDuration);
+		objectAnimator4.setDuration(mDuration);
+		
 		set.playTogether(objectAnimator2, objectAnimator3, objectAnimator4);
 		set.setStartDelay(delay);
 		set.start();
@@ -169,7 +212,10 @@ public class SwitchAnimationUtil {
 				"rotationX", -180f, 0f);
 		ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(view, "alpha",
 				0f, 1f);
-		set.setDuration(mDuration);
+		
+		objectAnimator1.setDuration(mDuration);
+		objectAnimator2.setDuration(mDuration);
+		
 		set.playTogether(objectAnimator1, objectAnimator2);
 		set.setStartDelay(delay);
 		set.start();
@@ -182,13 +228,16 @@ public class SwitchAnimationUtil {
 				"rotationY", -180f, 0f);
 		ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(view, "alpha",
 				0f, 1f);
-		set.setDuration(mDuration);
+		
+		objectAnimator1.setDuration(mDuration);
+		objectAnimator2.setDuration(mDuration);
+		
 		set.playTogether(objectAnimator1, objectAnimator2);
 		set.setStartDelay(delay);
 		set.start();
 	}
 
 	public enum AnimationType {
-		ALPHA, ROTATE, HORIZION_LEFT, HORIZION_RIGHT, HORIZON_CROSS, SCALE, FLIP_HORIZON, FLIP_VERTICAL
+		ALPHA, ROTATE, HORIZION_LEFT, HORIZION_RIGHT, HORIZON_CROSS, SCALE, FLIP_HORIZON, FLIP_VERTICAL,VERTICAL_BOTTOM
 	}
 }

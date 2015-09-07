@@ -5,18 +5,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 
 import com.dk.animation.SwitchAnimationUtil;
 import com.dk.animation.ViewUtils;
 import com.dk.animation.SwitchAnimationUtil.AnimationType;
 
 public class MainActivity extends Activity {
-
+	LinearLayout llContent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new SwitchAnimationUtil().startAnimation(getWindow().getDecorView(), Constant.mType);
+        llContent=(LinearLayout)findViewById(R.id.content);
+        new SwitchAnimationUtil().startAnimation(llContent.getChildAt(1),1, Constant.mType);
 
     }
 
